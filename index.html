@@ -10,7 +10,7 @@
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="logo.png">
+  <link rel="apple-touch-icon" href="RAM.GIF">
 
   <style>
     :root {
@@ -37,11 +37,38 @@
       padding-top: 60px;
       padding-top: max(60px, env(safe-area-inset-top));
       padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+      position: relative;
+    }
+
+    /* Exit Button in Top Right Safe Area */
+    .exit-btn {
+      position: absolute;
+      top: max(16px, env(safe-area-inset-top));
+      right: 16px;
+      color: var(--accent-color);
+      background: #181818;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      z-index: 100;
+    }
+
+    .exit-btn:active {
+      background: #333333;
+      border-color: var(--accent-color);
     }
 
     .header-container {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 24px; /* Symmetrical top gap to grid */
       width: 100%;
       max-width: 500px;
     }
@@ -54,7 +81,7 @@
     }
 
     h1 {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text-color);
       text-transform: uppercase;
@@ -66,6 +93,7 @@
       color: var(--accent-color);
       margin-top: 4px;
       letter-spacing: 0.5px;
+      line-height: 1.4;
     }
 
     /* 2x2 Clickable Grid Layout */
@@ -112,15 +140,19 @@
       line-height: 1.3;
     }
 
-    footer {
-      margin-top: 32px;
-      font-size: 0.75rem;
-      color: #ffffff;
+    /* Bottom Header Block: Symmetrical Bottom Gap */
+    .footer-container {
       text-align: center;
+      margin-top: 24px; /* Matches the top margin-bottom: 24px */
+      width: 100%;
+      max-width: 500px;
     }
   </style>
 </head>
 <body>
+
+  <!-- Exit Button -->
+  <button class="exit-btn" onclick="exitApp()" aria-label="Exit">✕</button>
 
   <header class="header-container">
     <img src="RAM.GIF" alt="RamNation Logo" class="logo" onerror="this.style.display='none'">
@@ -154,16 +186,27 @@
     </a>
   </main>
   
-  <header class="header-container">
-    <h1>  Lake Mary High School Science Department</h1>
-    <div class="subtitle">    Mobile generation of screens found outside room 01-251, 
-    classroom of Mr. Luther Davis, physics and astronomy teacher.</div>
-  </header>
+  <footer class="footer-container">
+    <h1>Lake Mary High School Science Department</h1>
+    <div class="subtitle">
+      Mobile generation of screens found outside room 01-251, classroom of Mr. Luther Davis, physics and astronomy teacher.
+    </div>
+  </footer>
 
   <script>
+    function exitApp() {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        window.close();
+      }
+    }
+
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
   </script>
+</body>
+</html>
 </body>
 </html>
