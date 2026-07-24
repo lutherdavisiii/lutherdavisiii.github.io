@@ -20,15 +20,24 @@
       --text-color: #ffffff;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * { box-sizing: border-box; margin: 0; padding: 
+      
+      
+      
+    
+    
+    
+    
     body {
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      padding: 12px;
-      padding-bottom: 40px;
-    }
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  padding: 12px;
+  /* Dynamic black status bar buffer for iPhone notches & Dynamic Islands */
+  padding-top: calc(16px + env(safe-area-inset-top, 20px));
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+}
+
 
     header {
       display: flex;
