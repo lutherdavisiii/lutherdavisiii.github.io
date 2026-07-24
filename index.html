@@ -138,9 +138,13 @@
 <body>
 
   <header>
-    <h1>Live Weather</h1>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <a href="index.html" style="color: var(--accent-color); text-decoration: none; font-size: 1.2rem; font-weight: bold; padding: 4px 8px;">←</a>
+      <h1>Live Weather Radars</h1>
+    </div>
     <button class="refresh-btn" onclick="refreshImages(true)">⚡ Refresh</button>
   </header>
+
 
   <main class="dashboard-grid" id="grid"></main>
 
