@@ -1,1 +1,163 @@
-index
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>RamNation Science Dashboard</title>
+  
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <style>
+    :root {
+      --bg-color: #000000;
+      --card-bg: #111111;
+      --accent-color: #ff9800;
+      --border-color: #333333;
+      --text-color: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+    }
+
+    .header-container {
+      text-align: center;
+      margin-bottom: 24px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .logo {
+      max-width: 130px;
+      height: auto;
+      margin-bottom: 12px;
+      object-fit: contain;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      font-size: 0.85rem;
+      color: var(--accent-color);
+      margin-top: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    /* 2x2 Clickable Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .grid-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--text-color);
+      padding: 16px;
+      text-align: center;
+      transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Touch / Hover animations for mobile feedback */
+    .grid-card:active {
+      transform: scale(0.95);
+      border-color: var(--accent-color);
+      background: #1a1a1a;
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    footer {
+      margin-top: 32px;
+      font-size: 0.75rem;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-container">
+    <img src="logo.png" alt="RamNation Logo" class="logo" onerror="this.style.display='none'">
+    <h1>RamNation Science Dashboard</h1>
+    <div class="subtitle">Interactive Display Network</div>
+  </header>
+
+  <main class="dashboard-grid">
+    <!-- Upper Left -->
+    <a href="astronomy.html" class="grid-card">
+      <div class="card-icon">🚀</div>
+      <div class="card-title">Astronomy Image & Data</div>
+    </a>
+
+    <!-- Upper Right -->
+    <a href="forecast.html" class="grid-card">
+      <div class="card-icon">🌤️</div>
+      <div class="card-title">Weather Forecast</div>
+    </a>
+
+    <!-- Lower Left -->
+    <a href="radars.html" class="grid-card">
+      <div class="card-icon">📡</div>
+      <div class="card-title">Weather Radars</div>
+    </a>
+
+    <!-- Lower Right -->
+    <a href="cams.html" class="grid-card">
+      <div class="card-icon">📹</div>
+      <div class="card-title">Weather Ram Cams</div>
+    </a>
+  </main>
+
+  <footer>
+    RamNation Science Department
+  </footer>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>
