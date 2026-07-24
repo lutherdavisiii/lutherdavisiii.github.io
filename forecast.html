@@ -1,1 +1,399 @@
-forecast
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Weather Forecasts - RamNation Science</title>
+  
+  <!-- PWA & Mobile Meta Tags -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="logo.png">
+
+  <style>
+    :root {
+      --bg-color: #000000;
+      --card-bg: #111111;
+      --accent-color: #ff9800;
+      --border-color: #333333;
+      --text-color: #ffffff;
+    }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 12px;
+      /* Clear top padding for iPhone Status Bar & Dynamic Island */
+      padding-top: 60px;
+      padding-top: max(60px, env(safe-area-inset-top));
+      padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+      position: relative;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding: 4px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-btn {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #181818;
+      border: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-btn:active {
+      background: #333;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .refresh-btn {
+      background: #222;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .refresh-btn:active {
+      background: #333;
+    }
+
+    /* Exit Button inside Header */
+    .exit-btn {
+      color: var(--accent-color);
+      background: #181818;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: bold;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .exit-btn:active {
+      background: #333;
+      border-color: var(--accent-color);
+    }
+
+    /* 3x3 Responsive Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 600px) { 
+      .dashboard-grid { grid-template-columns: repeat(2, 1fr); } 
+    }
+
+    @media (min-width: 1024px) { 
+      .dashboard-grid { grid-template-columns: repeat(3, 1fr); } 
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid #222;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 0.85rem;
+      font-style: italic;
+      color: var(--accent-color);
+      padding: 8px 10px;
+      background: #181818;
+      border-bottom: 1px solid #222;
+    }
+
+    .img-container {
+      width: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 180px;
+      cursor: pointer;
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* Image Load Failure Styling */
+    .img-offline {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+      height: 180px;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      background: #000;
+    }
+
+    /* Modal for Tap-to-Expand */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 16px;
+    }
+
+    .modal.active { display: flex; }
+    .modal img { max-width: 100%; max-height: 85vh; object-fit: contain; }
+    .modal-title { color: var(--accent-color); margin-top: 12px; font-size: 0.95rem; }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #222;
+      border: 1px solid #444;
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+    /* Exit Dialog Overlay */
+    .exit-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .exit-modal.active {
+      display: flex;
+    }
+
+    .exit-modal-box {
+      background: #181818;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 320px;
+      text-align: center;
+    }
+
+    .exit-modal-box h3 {
+      color: var(--accent-color);
+      margin-bottom: 8px;
+    }
+
+    .exit-modal-box p {
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .exit-modal-box button {
+      background: var(--accent-color);
+      color: #000;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <a href="index.html" class="back-btn" aria-label="Back to Hub">←</a>
+      <h1>Weather Forecasts</h1>
+    </div>
+    <div class="header-right">
+      <button class="refresh-btn" onclick="refreshImages(true)">⚡ Refresh</button>
+      <button class="exit-btn" onclick="openExitModal()" aria-label="Exit">✕</button>
+    </div>
+  </header>
+
+  <main class="dashboard-grid" id="grid"></main>
+
+  <!-- Modal for Tap-to-Expand -->
+  <div class="modal" id="modal" onclick="closeModal()">
+    <img id="modal-img" src="" alt="Expanded Forecast Graphic">
+    <div class="modal-title" id="modal-title"></div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">Forecasts Updated</div>
+
+  <!-- Exit Overlay Popup -->
+  <div class="exit-modal" id="exitModal" onclick="closeExitModal()">
+    <div class="exit-modal-box" onclick="event.stopPropagation()">
+      <h3>Close Dashboard</h3>
+      <p>To exit this web app, swipe up from the bottom of your screen (or press your Home button).</p>
+      <button onclick="closeExitModal()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const forecastData = [
+      { label: "7-Day Forecast", url: "https://media.raven.news/images/wx/n13/currents/7day.jpg" },
+      { label: "Rain Chances Today", url: "https://media.raven.news/images/wx/n13/7day/rain_chances_today.jpg" },
+      { label: "Rain Chances Tomorrow", url: "https://media.raven.news/images/wx/n13/7day/rain_chances_tomorrow.jpg" },
+      { label: "Forecast Today", url: "https://media.raven.news/images/wx/n13/currents/forecast_today.jpg" },
+      { label: "Forecast Tonight", url: "https://media.raven.news/images/wx/n13/currents/forecast_tonight.jpg" },
+      { label: "Forecast Tomorrow", url: "https://media.raven.news/images/wx/n13/currents/forecast_tomorrow.jpg" },
+      { label: "Florida Highs Today", url: "https://media.raven.news/images/wx/n13/7day/florida_forecast_highs.jpg" },
+      { label: "Florida Lows Tonight", url: "https://media.raven.news/images/wx/n13/7day/florida_forecast_lows.jpg" },
+      { label: "Florida Highs Tomorrow", url: "https://media.raven.news/images/wx/n13/7day/florida_forecast_highs_tomorrow.jpg" }
+    ];
+
+    function initDashboard() {
+      const grid = document.getElementById("grid");
+      grid.innerHTML = "";
+
+      forecastData.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-title">${item.label}</div>
+          <div class="img-container" id="container-${index}" onclick="openModal('${item.label}', ${index})">
+            <img id="img-${index}" src="${getCacheBustedUrl(item.url)}" alt="${item.label}" loading="lazy" onerror="handleImageError(${index})">
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      // Auto-refresh graphics every 10 minutes
+      setInterval(() => refreshImages(false), 600000);
+    }
+
+    function getCacheBustedUrl(url) {
+      const sep = url.includes("?") ? "&" : "?";
+      return `${url}${sep}t=${Date.now()}`;
+    }
+
+    function refreshImages(manual = false) {
+      forecastData.forEach((item, index) => {
+        const img = document.getElementById(`img-${index}`);
+        const container = document.getElementById(`container-${index}`);
+
+        if (img) {
+          img.src = getCacheBustedUrl(item.url);
+        } else if (container) {
+          container.innerHTML = `<img id="img-${index}" src="${getCacheBustedUrl(item.url)}" alt="${item.label}" loading="lazy" onerror="handleImageError(${index})">`;
+        }
+      });
+
+      if (manual) showToast("Forecasts Refreshed");
+    }
+
+    function handleImageError(index) {
+      const container = document.getElementById(`container-${index}`);
+      if (container) {
+        container.innerHTML = `<div class="img-offline">Not Available<br>At This Time</div>`;
+      }
+    }
+
+    function openModal(label, index) {
+      const img = document.getElementById(`img-${index}`);
+      if (!img) return;
+
+      const modalImg = document.getElementById("modal-img");
+      modalImg.src = img.src;
+      document.getElementById("modal-title").textContent = label;
+      document.getElementById("modal").classList.add("active");
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.remove("active");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2000);
+    }
+
+    function openExitModal() {
+      document.getElementById("exitModal").classList.add("active");
+    }
+
+    function closeExitModal() {
+      document.getElementById("exitModal").classList.remove("active");
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    window.onload = initDashboard;
+  </script>
+</body>
+</html>
