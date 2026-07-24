@@ -68,7 +68,7 @@
 
     .header-container {
       text-align: center;
-      margin-bottom: 24px; /* Symmetrical top gap to grid */
+      margin-bottom: 24px;
       width: 100%;
       max-width: 500px;
     }
@@ -122,7 +122,6 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* Touch / Hover animations for mobile feedback */
     .grid-card:active {
       transform: scale(0.95);
       border-color: var(--accent-color);
@@ -143,16 +142,63 @@
     /* Bottom Header Block: Symmetrical Bottom Gap */
     .footer-container {
       text-align: center;
-      margin-top: 24px; /* Matches the top margin-bottom: 24px */
+      margin-top: 24px;
       width: 100%;
       max-width: 500px;
+    }
+
+    /* Exit Dialog Overlay */
+    .exit-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .exit-modal.active {
+      display: flex;
+    }
+
+    .exit-modal-box {
+      background: #181818;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 320px;
+      text-align: center;
+    }
+
+    .exit-modal-box h3 {
+      color: var(--accent-color);
+      margin-bottom: 8px;
+    }
+
+    .exit-modal-box p {
+      font-size: 0.85rem;
+      color: #ccc;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    .exit-modal-box button {
+      background: var(--accent-color);
+      color: #000;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
 
   <!-- Exit Button -->
-  <button class="exit-btn" onclick="exitApp()" aria-label="Exit">✕</button>
+  <button class="exit-btn" onclick="openExitModal()" aria-label="Exit">✕</button>
 
   <header class="header-container">
     <img src="RAM.GIF" alt="RamNation Logo" class="logo" onerror="this.style.display='none'">
@@ -161,25 +207,21 @@
   </header>
 
   <main class="dashboard-grid">
-    <!-- Upper Left -->
     <a href="astronomy.html" class="grid-card">
       <div class="card-icon">🚀</div>
       <div class="card-title">Astronomy Image & Data</div>
     </a>
 
-    <!-- Upper Right -->
     <a href="forecast.html" class="grid-card">
       <div class="card-icon">🌤️</div>
       <div class="card-title">Weather Forecast</div>
     </a>
 
-    <!-- Lower Left -->
     <a href="radars.html" class="grid-card">
       <div class="card-icon">📡</div>
       <div class="card-title">Weather Radars</div>
     </a>
 
-    <!-- Lower Right -->
     <a href="cams.html" class="grid-card">
       <div class="card-icon">📹</div>
       <div class="card-title">Weather Ram Cams</div>
@@ -193,13 +235,22 @@
     </div>
   </footer>
 
+  <!-- Exit Overlay Popup -->
+  <div class="exit-modal" id="exitModal" onclick="closeExitModal()">
+    <div class="exit-modal-box" onclick="event.stopPropagation()">
+      <h3>Close Dashboard</h3>
+      <p>To exit this web app, swipe up from the bottom of your screen (or press your Home button).</p>
+      <button onclick="closeExitModal()">OK</button>
+    </div>
+  </div>
+
   <script>
-    function exitApp() {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        window.close();
-      }
+    function openExitModal() {
+      document.getElementById("exitModal").classList.add("active");
+    }
+
+    function closeExitModal() {
+      document.getElementById("exitModal").classList.remove("active");
     }
 
     if ('serviceWorker' in navigator) {
@@ -208,5 +259,4 @@
   </script>
 </body>
 </html>
-</body>
 </html>
